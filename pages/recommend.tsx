@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
 import { bookSearch } from './api/book-search'
@@ -23,14 +24,17 @@ const recommend = () => {
   return (
     <div>
       <input value={query} onChange={(e) => setQuery(e.target.value)}></input>
-      {data.map((post) => (
-        <>
-          {post.authors.map((data) => (
-            <p>{data}</p>
-          ))}
-          <p>{post.title}</p>
-        </>
-      ))}
+      <div>
+        {data.map((post) => (
+          <>
+            {post.authors.map((data) => (
+              <p>{data}</p>
+            ))}
+            <img src={post.thumbnail} layout='fill' />
+            <p>{post.title}</p>
+          </>
+        ))}
+      </div>
     </div>
   )
 }
