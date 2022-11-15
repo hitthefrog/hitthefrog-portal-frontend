@@ -1,32 +1,68 @@
-import { Client } from "@notionhq/client";
-import { NotionAPI } from "notion-client";
-import { NotionCompatAPI } from "notion-compat";
-import { ExtendedRecordMap, SearchParams, SearchResults } from "notion-types";
+import { ExtendedRecordMap, SearchParams, SearchResults } from 'notion-types'
+import { mergeRecordMaps } from 'notion-utils'
+import pMap from 'p-map'
+import pMemoize from 'p-memoize'
 
-import { previewImagesEnabled, useOfficialNotionAPI } from "./config";
-import { getPreviewImageMap } from "./preview-images";
+import {
+  isPreviewImageSupportEnabled,
+  navigationLinks,
+  navigationStyle
+} from './config'
+import { notion } from './notion-api'
+import { getPreviewImageMap } from './preview-images'
 
-const notion = useOfficialNotionAPI
-  ? new NotionCompatAPI(new Client({ auth: process.env.NOTION_TOKEN }))
-  : new NotionAPI();
+const getNavigationLinkPages = pMemoize(
+  async (): Promise<ExtendedRecordMap[]> => {
+    const navigationLinkPageIds = (navigationLinks || [])
+      .map((link) => link.pageId)
+      .filter(Boolean)
 
-if (useOfficialNotionAPI) {
-  console.warn(
-    "Using the official Notion API. Note that many blocks only include partial support for formatting and layout. Use at your own risk."
-  );
-}
+    if (navigationStyle !== 'default' && navigationLinkPageIds.length) {
+      return pMap(
+        navigationLinkPageIds,
+        async (navigationLinkPageId) =>
+          notion.getPage(navigationLinkPageId, {
+            chunkLimit: 1,
+            fetchMissingBlocks: false,
+            fetchCollections: false,
+            signFileUrls: false
+          }),
+        {
+          concurrency: 4
+        }
+      )
+    }
+
+    return []
+  }
+)
 
 export async function getPage(pageId: string): Promise<ExtendedRecordMap> {
-  const recordMap = await notion.getPage(pageId);
+  let recordMap = await notion.getPage(pageId)
 
-  if (previewImagesEnabled) {
-    const previewImageMap = await getPreviewImageMap(recordMap);
-    (recordMap as any).preview_images = previewImageMap;
+  if (navigationStyle !== 'default') {
+    // ensure that any pages linked to in the custom navigation header have
+    // their block info fully resolved in the page record map so we know
+    // the page title, slug, etc.
+    const navigationLinkRecordMaps = await getNavigationLinkPages()
+
+    if (navigationLinkRecordMaps?.length) {
+      recordMap = navigationLinkRecordMaps.reduce(
+        (map, navigationLinkRecordMap) =>
+          mergeRecordMaps(map, navigationLinkRecordMap),
+        recordMap
+      )
+    }
   }
 
-  return recordMap;
+  if (isPreviewImageSupportEnabled) {
+    const previewImageMap = await getPreviewImageMap(recordMap)
+    ;(recordMap as any).preview_images = previewImageMap
+  }
+
+  return recordMap
 }
 
 export async function search(params: SearchParams): Promise<SearchResults> {
-  return notion.search(params);
+  return notion.search(params)
 }

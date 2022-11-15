@@ -1,34 +1,23 @@
-import * as React from "react";
+import * as React from 'react'
 
-import { ExtendedRecordMap } from "notion-types";
-
-import * as notion from "../lib/notion";
-import { NotionPage } from "../components/NotionPage";
-import {
-  previewImagesEnabled,
-  rootDomain,
-  rootNotionPageId,
-} from "../lib/config";
+import { NotionPage } from '@/components/NotionPage'
+import { domain } from '@/lib/config'
+import { resolveNotionPage } from '@/lib/resolve-notion-page'
 
 export const getStaticProps = async () => {
-  const pageId = rootNotionPageId;
-  const recordMap = await notion.getPage(pageId);
+  try {
+    const props = await resolveNotionPage(domain)
 
-  return {
-    props: {
-      recordMap,
-    },
-    revalidate: 10,
-  };
-};
+    return { props, revalidate: 10 }
+  } catch (err) {
+    console.error('page error', domain, err)
 
-export default function Page({ recordMap }: { recordMap: ExtendedRecordMap }) {
-  return (
-    <NotionPage
-      recordMap={recordMap}
-      rootDomain={rootDomain}
-      rootPageId={rootNotionPageId}
-      previewImagesEnabled={previewImagesEnabled}
-    />
-  );
+    // we don't want to publish the error version of this page, so
+    // let next.js know explicitly that incremental SSG failed
+    throw err
+  }
+}
+
+export default function NotionDomainPage(props) {
+  return <NotionPage {...props} />
 }
