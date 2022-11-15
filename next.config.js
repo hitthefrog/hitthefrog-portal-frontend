@@ -15,6 +15,9 @@ module.exports = withBundleAnalyzer({
       's3.us-west-2.amazonaws.com',
       'transitivebullsh.it'
     ],
+    compiler: {
+      styledComponents: true
+    },
     formats: ['image/avif', 'image/webp'],
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
