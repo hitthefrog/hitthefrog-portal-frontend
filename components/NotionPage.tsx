@@ -242,30 +242,30 @@ export const NotionPage: React.FC<types.PageProps> = ({
     getPageProperty<string>('Description', block, recordMap) ||
     config.description
 
-  const name = '이름ㅋㅋㅋ'
-  const email = 'sd'
-  const purpose = 'dsad'
-  const message = '메시지'
-  const submitForm = async (e) => {
-    e.preventDefault()
-    const res = await fetch('http://localhost:3000/api/create-page', {
-      method: 'POST',
-      body: JSON.stringify({ name, email, purpose, message })
-    })
-    // Success if status code is 201
-    if (res.status === 201) {
-      console.log(res.status, 'Thank you for contacting us!', {
-        type: 'success'
-      })
-    } else {
-      console.log(res.status, 'Please re-check your inputs.', { type: 'error' })
-    }
-  }
+  // const name = '이름ㅋㅋㅋ'
+  // const email = 'sd'
+  // const purpose = 'dsad'
+  // const message = '메시지'
+  // const submitForm = async (e) => {
+  //   e.preventDefault()
+  //   const res = await fetch('http://localhost:3000/api/create-page', {
+  //     method: 'POST',
+  //     body: JSON.stringify({ name, email, purpose, message })
+  //   })
+  //   // Success if status code is 201
+  //   if (res.status === 201) {
+  //     console.log(res.status, 'Thank you for contacting us!', {
+  //       type: 'success'
+  //     })
+  //   } else {
+  //     console.log(res.status, 'Please re-check your inputs.', { type: 'error' })
+  //   }
+  // }
 
   return (
     <>
-      <input></input>
-      <button onClick={submitForm}>asdasd</button>
+      {/* <input></input>
+      <button onClick={submitForm}>asdasd</button> */}
       <PageHead
         pageId={pageId}
         site={site}
@@ -302,8 +302,6 @@ export const NotionPage: React.FC<types.PageProps> = ({
         pageAside={pageAside}
         footer={footer}
       />
-
-      <GitHubShareButton />
     </>
   )
 }

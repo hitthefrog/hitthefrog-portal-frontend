@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 import * as Fathom from 'fathom-client'
 // used for rendering equations (optional)
 import 'katex/dist/katex.min.css'
+import { SessionProvider } from 'next-auth/react'
 import posthog from 'posthog-js'
 // used for code syntax highlighting (optional)
 import 'prismjs/themes/prism-coy.css'
@@ -18,6 +19,13 @@ import 'styles/global.css'
 import 'styles/notion.css'
 // global style overrides for prism theme (optional)
 import 'styles/prism-theme.css'
+import {
+  WagmiConfig,
+  configureChains,
+  createClient,
+  defaultChains
+} from 'wagmi'
+import { publicProvider } from 'wagmi/providers/public'
 
 import { bootstrap } from '@/lib/bootstrap-client'
 import {
@@ -27,6 +35,16 @@ import {
   posthogConfig,
   posthogId
 } from '@/lib/config'
+
+const { provider, webSocketProvider } = configureChains(defaultChains, [
+  publicProvider()
+])
+
+const client = createClient({
+  provider,
+  webSocketProvider,
+  autoConnect: true
+})
 
 if (!isServer) {
   bootstrap()
@@ -61,5 +79,11 @@ export default function App({ Component, pageProps }: AppProps) {
     }
   }, [router.events])
 
-  return <Component {...pageProps} />
+  return (
+    <WagmiConfig client={client}>
+      <SessionProvider session={pageProps.session} refetchInterval={0}>
+        <Component {...pageProps} />{' '}
+      </SessionProvider>
+    </WagmiConfig>
+  )
 }

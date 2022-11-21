@@ -1,5 +1,7 @@
 import * as React from 'react'
 
+import SignIn from 'pages/signin'
+
 import { NotionPage } from '@/components/NotionPage'
 import { domain } from '@/lib/config'
 import { resolveNotionPage } from '@/lib/resolve-notion-page'
@@ -19,5 +21,7 @@ export const getStaticProps = async () => {
 }
 
 export default function NotionDomainPage(props) {
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false)
+
   return <NotionPage {...props} />
 }
