@@ -1,23 +1,35 @@
 import styled from '@emotion/styled'
 
-const Box = ({ children }) => {
-  return <Container>{children}</Container>
+type Box = {
+  children: any
+  isSearchbar: boolean
+  query: string
 }
 
-const Container = styled.div`
+const Box = ({ children, isSearchbar, query }: Box) => {
+  return (
+    <Container query={query} isSearchbar={isSearchbar}>
+      {children}
+    </Container>
+  )
+}
+
+const Container = styled.div<{ isSearchbar: boolean; query: string }>`
   box-sizing: border-box;
 
   /* Auto layout */
 
   display: flex;
-  flex-direction: column;
+  flex-direction: ${(props) => (props.isSearchbar ? 'row' : 'column')};
   justify-content: flex-end;
   align-items: center;
-  padding: 24px;
-  gap: 24px;
+  padding: ${(props) => (props.isSearchbar ? '' : '24px')};
+  gap: ${(props) => (props.isSearchbar ? '16px' : '24px')};
+  top: 300px;
+  position: ${(props) => (props.isSearchbar ? 'absolute' : '')};
 
-  width: 298px;
-  height: 371px;
+  width: ${(props) => (props.isSearchbar ? '640px' : '340px')};
+  height: ${(props) => (props.isSearchbar ? '64px' : '420px')};
 
   background: rgba(255, 255, 255, 0.1);
   /* stroke */
@@ -26,7 +38,8 @@ const Container = styled.div`
   backdrop-filter: blur(40.775px);
   /* Note: backdrop-filter has minimal browser support */
 
-  border-radius: 16px;
+  border-radius: ${(props) =>
+    props.query === '' ? '16px' : '16px 16px 0px 0px'};
 `
 
 export default Box

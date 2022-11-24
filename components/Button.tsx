@@ -2,10 +2,10 @@ import styled from '@emotion/styled'
 
 type Button = {
   children: any
-  onClick: any
+  onClick?: any
 }
 
-const Button = ({ children, onClick }) => {
+const Button = ({ children, onClick }: Button) => {
   return <Container onClick={onClick}>{children}</Container>
 }
 
