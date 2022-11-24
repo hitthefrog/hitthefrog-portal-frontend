@@ -3,6 +3,7 @@ import { getSession, signOut } from 'next-auth/react'
 
 // gets a prop from getServerSideProps
 function User({ user }) {
+  console.log(user)
   const handleGetNFT = async () => {
     const { data } = await axios.post('/api/get-nft', user.address, {
       headers: {

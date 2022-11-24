@@ -2,7 +2,6 @@ import { EvmChain } from '@moralisweb3/evm-utils'
 import Moralis from 'moralis'
 
 export default async function getNFT(req, res) {
-  console.log(req.body)
   const address = JSON.parse(req.body)
 
   await Moralis.start({

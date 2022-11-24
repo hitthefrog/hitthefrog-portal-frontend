@@ -1,27 +1,45 @@
-import * as React from 'react'
+import { EvmChain } from '@moralisweb3/evm-utils'
+import Moralis from 'moralis'
+import { getSession } from 'next-auth/react'
 
-import SignIn from 'pages/signin'
+function Protected({ message, nftList }) {
+  return (
+    <div>
+      <h3>HIT THE FROG</h3>
+      <p>{message}</p>
+      <pre>{JSON.stringify(nftList, null, 2)}</pre>
+    </div>
+  )
+}
 
-import { NotionPage } from '@/components/NotionPage'
-import { domain } from '@/lib/config'
-import { resolveNotionPage } from '@/lib/resolve-notion-page'
+export async function getServerSideProps(context) {
+  const session = await getSession(context)
 
-export const getStaticProps = async () => {
-  try {
-    const props = await resolveNotionPage(domain)
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/signin',
+        permanent: false
+      }
+    }
+  }
 
-    return { props, revalidate: 10 }
-  } catch (err) {
-    console.error('page error', domain, err)
+  await Moralis.start({ apiKey: process.env.MORALIS_API_KEY })
+  const chain = EvmChain.POLYGON
+  const nftList = await Moralis.EvmApi.nft.getWalletNFTs({
+    address: session.user.address,
+    chain
+  })
 
-    // we don't want to publish the error version of this page, so
-    // let next.js know explicitly that incremental SSG failed
-    throw err
+  return {
+    props: {
+      message:
+        // if user has at least one NFT he will get protected content
+        nftList.raw.total > 0
+          ? 'Nice! You have our NFT'
+          : "Sorry, you don't have our NFT",
+      nftList: nftList.raw.result
+    }
   }
 }
-
-export default function NotionDomainPage(props) {
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false)
-
-  return <NotionPage {...props} />
-}
+export default Protected
