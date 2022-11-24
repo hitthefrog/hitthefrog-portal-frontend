@@ -42,7 +42,7 @@ function SignIn() {
       message,
       signature,
       redirect: false,
-      callbackUrl: '/user'
+      callbackUrl: '/'
     })
     /**
      * instead of using signIn(..., redirect: "/user")
@@ -77,7 +77,7 @@ export async function getServerSideProps(context) {
   if (session) {
     return {
       redirect: {
-        destination: '/user',
+        destination: '/',
         permanent: false
       }
     }

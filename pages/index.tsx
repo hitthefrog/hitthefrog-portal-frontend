@@ -31,6 +31,15 @@ export async function getServerSideProps(context) {
     chain
   })
 
+  if (nftList.raw.total < 0) {
+    return {
+      redirect: {
+        destination: '/recommend',
+        permanent: false
+      }
+    }
+  }
+
   return {
     props: {
       message:
