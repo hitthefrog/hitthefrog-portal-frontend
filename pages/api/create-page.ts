@@ -1,3 +1,5 @@
+import { Book } from '@/lib/types'
+
 const { Client } = require('@notionhq/client')
 
 const notion = new Client({
@@ -11,17 +13,42 @@ export default async function handler(req, res) {
       .json({ message: `${req.method} requests are not allowed` })
   }
   try {
-    const { name, email, purpose, message } = JSON.parse(req.body)
+    const { title, authors, thumbnail, comment, createdBy }: Book = JSON.parse(
+      req.body
+    )
     await notion.pages.create({
       parent: {
         database_id: process.env.NOTION_DATABASE_ID
       },
+      cover: {
+        type: 'external',
+        external: {
+          url: thumbnail
+        }
+      },
       properties: {
-        Name: {
+        Title: {
           title: [
             {
               text: {
-                content: name
+                content: title
+              }
+            }
+          ]
+        },
+        Author: {
+          multi_select: authors.map((name) => ({ name }))
+        },
+        CreatedBy: {
+          select: {
+            name: createdBy
+          }
+        },
+        Comment: {
+          rich_text: [
+            {
+              text: {
+                content: comment
               }
             }
           ]

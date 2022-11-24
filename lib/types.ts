@@ -3,6 +3,14 @@ import { ParsedUrlQuery } from 'querystring'
 
 export * from 'notion-types'
 
+export interface Book {
+  title: string
+  authors: string[]
+  thumbnail: string
+  comment?: string
+  createdBy?: string
+}
+
 export type NavigationStyle = 'default' | 'custom'
 
 export interface PageError {

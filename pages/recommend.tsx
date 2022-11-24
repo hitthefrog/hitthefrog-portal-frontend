@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
 import styled from '@emotion/styled'
@@ -6,8 +5,153 @@ import { getSession } from 'next-auth/react'
 
 import Button from '@/components/Button'
 import Box from '@/components/box'
+import { Book } from '@/lib/types'
 
 import { bookSearch } from './api/book-search'
+
+const recommend = ({ user }) => {
+  const [query, setQuery] = useState('')
+  const [data, setData] = useState([])
+  const [startSearch, setStartSearch] = useState(false)
+  const [currentBook, setCurrentBook] = useState<Book>({
+    title: '',
+    authors: '',
+    thumbnail: '',
+    comment: '',
+    createdBy: ''
+  })
+  const [startWirte, setStartWrite] = useState(false)
+
+  const getBookData = async (query) => {
+    if (query === '') {
+      return null
+    } else {
+      const { data } = await bookSearch({ query: query })
+      return setData(data.documents)
+    }
+  }
+
+  useEffect(() => {
+    getBookData(query)
+  }, [query])
+
+  const submitForm = async (e) => {
+    e.preventDefault()
+    const res = await fetch('http://localhost:3000/api/create-page', {
+      method: 'POST',
+      body: JSON.stringify({
+        title: currentBook.title,
+        authors: currentBook.authors,
+        thumbnail: currentBook.thumbnail,
+        createdBy: currentBook.createdBy,
+        comment: currentBook.comment
+      })
+    })
+    // Success if status code is 201
+    if (res.status === 201) {
+      console.log(res.status, 'Thank you for contacting us!', {
+        type: 'success'
+      })
+    } else {
+      console.log(res.status, 'Please re-check your inputs.', { type: 'error' })
+    }
+  }
+
+  return (
+    <Container>
+      <Box query={query} isSearchbar={startSearch}>
+        {startSearch ? (
+          <>
+            <Icon
+              xmlns='http://www.w3.org/2000/svg'
+              fill='none'
+              viewBox='0 0 24 24'
+              strokeWidth={1.5}
+              stroke='currentColor'
+              className='w-6 h-6'
+            >
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                d='M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z'
+              />
+            </Icon>
+            <SearchBar
+              value={query}
+              placeholder={'Search your books'}
+              onChange={(e) => setQuery(e.target.value)}
+            ></SearchBar>
+          </>
+        ) : (
+          <>
+            <h3>Just recommend 3books, then be our whitelist</h3>
+            <Button onClick={() => setStartSearch(true)}>Get Started</Button>
+          </>
+        )}
+      </Box>
+      {startWirte ? (
+        <BookList query={query}>
+          <BookContainer>
+            <img src={currentBook.thumbnail} layout='fill' />
+            <BookDetails>
+              <p>{currentBook.title}</p>
+              <div>
+                {currentBook.authors.map((data) => (
+                  <span>{data}</span>
+                ))}
+              </div>
+            </BookDetails>
+          </BookContainer>
+          <BookCommentContainer>
+            <div>
+              <p>Comment</p>
+              <SearchBar
+                onChange={(e) => {
+                  setCurrentBook({
+                    thumbnail: currentBook.thumbnail,
+                    title: currentBook.title,
+                    authors: currentBook.authors,
+                    comment: e.target.value,
+                    createdBy: user.address
+                  })
+                }}
+                placeholder={
+                  'Please tell us your any impression about this book (Max 200)'
+                }
+              ></SearchBar>
+            </div>
+            <Button onClick={submitForm}>1/3 Upload</Button>
+          </BookCommentContainer>
+        </BookList>
+      ) : (
+        <BookList query={query}>
+          {data.map((post) => (
+            <BookContainer
+              onClick={() => {
+                setCurrentBook({
+                  thumbnail: post.thumbnail,
+                  title: post.title,
+                  authors: post.authors
+                }),
+                  setStartWrite(true)
+              }}
+            >
+              <img src={post.thumbnail} layout='fill' />
+              <BookDetails>
+                <p>{post.title}</p>
+                <div>
+                  {post.authors.map((data) => (
+                    <span>{data}</span>
+                  ))}
+                </div>
+              </BookDetails>
+            </BookContainer>
+          ))}
+        </BookList>
+      )}
+    </Container>
+  )
+}
 
 const Container = styled.div`
   background: url('https://i.imgur.com/7mdVua3.png');
@@ -156,122 +300,6 @@ const BookCommentContainer = styled.div`
     font-size: 14px;
   }
 `
-
-const recommend = ({ user }) => {
-  const [query, setQuery] = useState('')
-  const [data, setData] = useState([])
-  const [startSearch, setStartSearch] = useState(false)
-  const [currentBook, setCurrentBook] = useState({})
-  const [startWirte, setStartWrite] = useState(false)
-
-  const getBookData = async (query) => {
-    if (query === '') {
-      return null
-    } else {
-      const { data } = await bookSearch({ query: query })
-      return setData(data.documents)
-    }
-  }
-
-  useEffect(() => {
-    getBookData(query)
-  }, [query])
-
-  console.log(currentBook)
-  return (
-    <Container>
-      <Box query={query} isSearchbar={startSearch}>
-        {startSearch ? (
-          <>
-            <Icon
-              xmlns='http://www.w3.org/2000/svg'
-              fill='none'
-              viewBox='0 0 24 24'
-              strokeWidth={1.5}
-              stroke='currentColor'
-              className='w-6 h-6'
-            >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                d='M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z'
-              />
-            </Icon>
-            <SearchBar
-              value={query}
-              placeholder={'Search your books'}
-              onChange={(e) => setQuery(e.target.value)}
-            ></SearchBar>
-          </>
-        ) : (
-          <>
-            <h3>Just recommend 3books, then be our whitelist</h3>
-            <Button onClick={() => setStartSearch(true)}>Get Started</Button>
-          </>
-        )}
-      </Box>
-      {startWirte ? (
-        <BookList query={query}>
-          <BookContainer>
-            <img src={currentBook.thumbnail} layout='fill' />
-            <BookDetails>
-              <p>{currentBook.title}</p>
-              <div>
-                {currentBook.authors.map((data) => (
-                  <span>{data}</span>
-                ))}
-              </div>
-            </BookDetails>
-          </BookContainer>
-          <BookCommentContainer>
-            <div>
-              <p>Comment</p>
-              <SearchBar
-                onChange={(e) => {
-                  setCurrentBook({
-                    title: currentBook.title,
-                    authors: currentBook.authors,
-                    comment: e.target.value,
-                    createdBy: user.address
-                  })
-                }}
-                placeholder={
-                  'Please tell us your any impression about this book (Max 200)'
-                }
-              ></SearchBar>
-            </div>
-            <Button onClick={() => console.log(currentBook)}>1/3 Upload</Button>
-          </BookCommentContainer>
-        </BookList>
-      ) : (
-        <BookList query={query}>
-          {data.map((post) => (
-            <BookContainer
-              onClick={() => {
-                setCurrentBook({
-                  thumbnail: post.thumbnail,
-                  title: post.title,
-                  authors: post.authors
-                }),
-                  setStartWrite(true)
-              }}
-            >
-              <img src={post.thumbnail} layout='fill' />
-              <BookDetails>
-                <p>{post.title}</p>
-                <div>
-                  {post.authors.map((data) => (
-                    <span>{data}</span>
-                  ))}
-                </div>
-              </BookDetails>
-            </BookContainer>
-          ))}
-        </BookList>
-      )}
-    </Container>
-  )
-}
 
 export async function getServerSideProps(context) {
   const session = await getSession(context)
