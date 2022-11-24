@@ -6,6 +6,7 @@ import { getSession, signIn } from 'next-auth/react'
 import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 
+import Button from '@/components/Button'
 import Box from '@/components/box'
 
 function SignIn() {
@@ -53,8 +54,7 @@ function SignIn() {
   return (
     <Background>
       <Box>
-        <h3>Web3 Authentication</h3>
-        <button onClick={() => handleAuth()}>Authenticate via Metamask</button>
+        <Button onClick={() => handleAuth()}>Login with MetaMask</Button>
       </Box>
     </Background>
   )
