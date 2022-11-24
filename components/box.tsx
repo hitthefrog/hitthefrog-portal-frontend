@@ -2,11 +2,11 @@ import styled from '@emotion/styled'
 
 type Box = {
   children: any
-  isSearchbar: boolean
-  query: string
+  isSearchbar?: boolean
+  query?: string
 }
 
-const Box = ({ children, isSearchbar, query }: Box) => {
+const Box = ({ children, isSearchbar = false, query = '' }: Box) => {
   return (
     <Container query={query} isSearchbar={isSearchbar}>
       {children}
@@ -25,7 +25,7 @@ const Container = styled.div<{ isSearchbar: boolean; query: string }>`
   align-items: center;
   padding: ${(props) => (props.isSearchbar ? '' : '24px')};
   gap: ${(props) => (props.isSearchbar ? '16px' : '24px')};
-  top: 300px;
+  top: calc(50vh - 210px);
   position: ${(props) => (props.isSearchbar ? 'absolute' : '')};
 
   width: ${(props) => (props.isSearchbar ? '640px' : '340px')};
