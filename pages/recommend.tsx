@@ -6,7 +6,7 @@ import styled from '@emotion/styled'
 import { bookSearch } from './api/book-search'
 
 const Container = styled.div`
-  background: url('https://i.imgur.com/7XaIf8n.png') center center;
+  background: url('https://i.imgur.com/7XaIf8n.png');
   background-repeat: no-repeat;
   background-size: 100vw;
   display: flex;
