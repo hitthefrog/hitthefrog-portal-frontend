@@ -11,6 +11,7 @@ const Title: FC = () => {
       flexDir="column"
       id="title"
       px="4"
+      backgroundColor={"#000000"}
     >
       <Box></Box>
       <Box>
