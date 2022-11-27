@@ -40,7 +40,7 @@ const Header: FC = () => {
       top={0}
       justifyContent="space-between"
       alignItems="center"
-      px={8}
+      px={24}
       py={2}
       zIndex={1}
     >
@@ -48,7 +48,7 @@ const Header: FC = () => {
         {/* PLN 로고 이름 or 이미지 변경 */}
         <Link href="/">
           <Text color={"#fff"} fontWeight="bold" fontSize="xl" cursor="pointer">
-            HIT THE FROG
+            <img src="/images/logo_white.svg" />
           </Text>
         </Link>
       </Box>
@@ -110,8 +110,13 @@ const Header: FC = () => {
               </PopoverContent>
             </Popover>
           ) : (
-            <Button onClick={onClickWallet}>
-              <AiOutlineWallet size={28} />
+            <Button
+              borderRadius={24}
+              backgroundColor={"#202020"}
+              onClick={onClickWallet}
+              _hover={{ bg: "#202020" }}
+            >
+              <AiOutlineWallet color={"#fff"} size={28} />
               <Text color={"#fff"} ml={2} fontSize="xs">
                 Connect
               </Text>
