@@ -3,6 +3,7 @@ import Story from "@components/home/Story";
 import Team from "@components/home/Team";
 import Title from "@components/home/Title";
 import { NextPage } from "next";
+import * as React from "react";
 
 const Home: NextPage = () => {
   return (
