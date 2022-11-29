@@ -1,4 +1,4 @@
-import { Box, Flex, ModalContent, Text } from "@chakra-ui/react";
+import { Box, Flex, ModalContent, Select, Text } from "@chakra-ui/react";
 import { ReactElement, useState } from "react";
 import Button from "./Button";
 
@@ -33,6 +33,18 @@ const WhiteListCard = () => {
   const [type, setType] = useState<
     "default" | "job" | "search" | "select" | "comment"
   >("default");
+  const [job, setJob] = useState<
+    | string
+    | "Designer"
+    | "Developer"
+    | "PM/PO"
+    | "Entrepreneur"
+    | "Artist"
+    | "Musician"
+    | "Student"
+    | "Other"
+  >("");
+
   const buttonText =
     type === "default"
       ? "Get Started"
@@ -69,7 +81,7 @@ const WhiteListCard = () => {
         justifyContent="space-between"
       >
         <Box></Box>
-        <Flex flexDirection={"column"} gap="32px">
+        <Flex flexDirection={"column"} gap="32px" color={"#fff"}>
           <Text
             fontSize={"xl"}
             color="#DBDBDB"
@@ -82,6 +94,18 @@ const WhiteListCard = () => {
               ? "What’s your job?"
               : ""}
           </Text>
+          {type === "job" ? (
+            <Select onChange={(e) => setJob(e.target.value)}>
+              <option value="Designer">Designer</option>
+              <option value="Developer">Developer</option>
+              <option value="PM/PO">PM/PO</option>
+              <option value="Entrepreneur">Entrepreneur</option>
+              <option value="Artist">Artist</option>
+              <option value="Musician">Musician</option>
+              <option value="Student">Student</option>
+              <option value="Other">Other</option>
+            </Select>
+          ) : null}
           <Button text={buttonText} onClick={onClick} />
         </Flex>
       </Flex>
