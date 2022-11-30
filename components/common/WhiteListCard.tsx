@@ -179,7 +179,7 @@ const WhiteListCard = () => {
               paddingBottom={"24px"}
               gap="16px"
             >
-              {bookData.map((post) => (
+              {bookData.map((post, index) => (
                 <Flex
                   style={{}}
                   w="full"
@@ -198,6 +198,7 @@ const WhiteListCard = () => {
                     }),
                       setType("comment");
                   }}
+                  key={index}
                 >
                   <Image
                     maxWidth={"80px"}
@@ -312,7 +313,7 @@ const WhiteListCard = () => {
                 </Flex>
               </Flex>
               <Flex flexDirection={"column"}>
-                <Text>Comment</Text>
+                <Text fontSize={"14px"}>Comment</Text>
                 <Input
                   value={comment}
                   placeholder={
