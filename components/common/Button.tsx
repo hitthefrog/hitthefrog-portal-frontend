@@ -8,16 +8,18 @@ interface ButtonPorps {
 const Button = ({ text, onClick }: ButtonPorps) => {
   return (
     <ChakraButton
-      backgroundColor={"#000000"}
-      color="#DBDBDB"
-      _hover={{ bg: "#0e0e0e" }}
+      borderRadius="8px"
+      backgroundColor="rgba(255,255,255,0.1)"
+      border="1px solid rgba(255,255,255,0.1)"
+      backdropFilter="blur(30px)"
+      color=" rgba(255,255,255,0.8);"
+      _hover={{ bg: "rgba(255,255,255,0.2)" }}
       _pressed={{ bg: "#0e0e0e" }}
       _active={{ bg: "#0e0e0e" }}
       onClick={onClick}
       fontWeight="medium"
-      padding={"16px"}
+      padding={"12px"}
       h="fit-content"
-      borderRadius={"8px"}
     >
       {text}
     </ChakraButton>

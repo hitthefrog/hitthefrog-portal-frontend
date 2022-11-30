@@ -1,10 +1,44 @@
-import { Box, Flex, ModalContent, Select, Text } from "@chakra-ui/react";
-import { ReactElement, useState } from "react";
+import { ChevronLeftIcon, SearchIcon } from "@chakra-ui/icons";
+import {
+  Box,
+  Flex,
+  Icon,
+  IconButton,
+  Image,
+  Input,
+  ModalContent,
+  Select,
+  Text,
+} from "@chakra-ui/react";
+import { useWallet } from "hooks";
+import { bookSearch } from "pages/api/book-search";
+import { ReactElement, useEffect, useState } from "react";
 import Button from "./Button";
+
+export type PageType = "default" | "job" | "search" | "select" | "comment";
+export type JobType =
+  | string
+  | "Designer"
+  | "Developer"
+  | "PM/PO"
+  | "Entrepreneur"
+  | "Artist"
+  | "Musician"
+  | "Student"
+  | "Other";
+
+export interface BookType {
+  title: string; //책 제목
+  authors: string; //책 작가 리스트
+  thumbnail: string; //썸네일 이미지(링크)
+  comment?: string; //책 관련된 한줄소감(리뷰)
+  createdBy?: string; //책 추천 작성자 지갑주소
+  job?: JobType; //직업
+}
 
 interface WhiteListCardProps {
   children: any;
-  type: "default" | "job" | "search" | "select" | "comment";
+  type: PageType;
   onClick?: any;
   buttonText?: string;
 }
@@ -13,16 +47,15 @@ const CardContainer = ({ children, type }: WhiteListCardProps) => {
   return (
     <ModalContent
       w="full"
-      h="full"
       maxWidth={
         type === "default" ? "320px" : type === "job" ? "320px" : "640px"
       }
-      maxHeight="480px"
+      maxHeight={"480px"}
       transition={"max-width 0.2s ease-in-out"}
-      background={"rgba(255, 255, 255, 0.1)"}
-      border={"1px solid rgba(245, 245, 245, 0.2)"}
-      backdropFilter={"blur(40.775px)"}
       borderRadius="16px"
+      border="1px solid rgba(255,255,255,0.1)"
+      background={" rgba(255,255,255,0.06)"}
+      backdropFilter={" blur(20px)"}
     >
       {children}
     </ModalContent>
@@ -30,30 +63,30 @@ const CardContainer = ({ children, type }: WhiteListCardProps) => {
 };
 
 const WhiteListCard = () => {
-  const [type, setType] = useState<
-    "default" | "job" | "search" | "select" | "comment"
-  >("default");
-  const [job, setJob] = useState<
-    | string
-    | "Designer"
-    | "Developer"
-    | "PM/PO"
-    | "Entrepreneur"
-    | "Artist"
-    | "Musician"
-    | "Student"
-    | "Other"
-  >("");
+  const { account } = useWallet();
+  const [query, setQuery] = useState("");
+  const [type, setType] = useState<PageType>("default");
+  const [job, setJob] = useState<JobType>("");
+  const [bookData, setBookData] = useState<BookType[] | null>(null);
+  const [comment, setComment] = useState<string>("");
+
+  const [currentBook, setCurrentBook] = useState<BookType>({
+    title: "",
+    authors: "",
+    thumbnail: "",
+    comment: "",
+    createdBy: "",
+  });
 
   const buttonText =
     type === "default"
-      ? "Get Started"
+      ? "Start"
       : type === "job"
-      ? "go to search"
+      ? "Next"
       : type === "search"
       ? "Next"
       : type === "comment"
-      ? ""
+      ? "Upload"
       : type === "select"
       ? ""
       : "";
@@ -66,36 +99,253 @@ const WhiteListCard = () => {
       : type === "search"
       ? setType("default")
       : type === "comment"
-      ? ""
+      ? console.log(currentBook)
       : type === "select"
       ? ""
       : "";
   };
 
+  const getBookData = async (query: string) => {
+    if (query === "") {
+      return null;
+    } else {
+      const { data } = await bookSearch({ query: query });
+      return setBookData(data.documents);
+    }
+  };
+
+  useEffect(() => {
+    getBookData(query);
+  }, [query]);
+
   return (
     <CardContainer type={type}>
       <Flex
-        h="full"
         flexDirection={"column"}
         padding="16px"
+        paddingTop={
+          type === "search" ? "24px" : type === "comment" ? "24px" : "32px"
+        }
         justifyContent="space-between"
+        transition={"max-height 0.2s ease-in-out"}
+        maxHeight="408px"
       >
-        <Box></Box>
-        <Flex flexDirection={"column"} gap="32px" color={"#fff"}>
-          <Text
-            fontSize={"xl"}
-            color="#DBDBDB"
-            textAlign={"center"}
-            fontWeight="medium"
+        {type === "search" ? (
+          <Flex
+            borderBottom={"1px solid rgba(245, 245, 245, 0.2)"}
+            paddingBottom="16px"
+            position={"sticky"}
+            alignItems="center"
+            top="0"
+            zIndex={1}
           >
-            {type === "default"
-              ? "Just recommend 3books, then be our whitelist!"
-              : type === "job"
-              ? "What’s your job?"
-              : ""}
-          </Text>
+            <Icon color="#fff" marginRight={"16px"}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                />
+              </svg>
+            </Icon>
+            <Input
+              value={query}
+              placeholder={"Search your books"}
+              onChange={(e) => setQuery(e.target.value)}
+              color="#dbdbdb"
+              fontSize="18px"
+              border="none"
+              padding={0}
+              h="fit-content"
+              background="transparent"
+              focusBorderColor="none"
+              _placeholder={{ color: " rgba(245, 245, 245, 0.2);" }}
+            ></Input>
+          </Flex>
+        ) : null}
+        {type === "search" && bookData !== null ? (
+          <Flex overflow={"scroll"}>
+            <Flex
+              flexDirection={"column"}
+              transition="max-height 0.5s ease-in-out"
+              paddingTop={"24px"}
+              paddingBottom={"24px"}
+              gap="16px"
+            >
+              {bookData.map((post) => (
+                <Flex
+                  style={{}}
+                  w="full"
+                  _hover={{
+                    scale: 0.95,
+                  }}
+                  cursor="pointer"
+                  flexDirection={"row"}
+                  onClick={() => {
+                    setCurrentBook({
+                      thumbnail: post.thumbnail,
+                      title: post.title,
+                      authors: post.authors[0],
+                      job: job,
+                      createdBy: account,
+                    }),
+                      setType("comment");
+                  }}
+                >
+                  <Image
+                    maxWidth={"80px"}
+                    borderRadius="8px"
+                    src={post.thumbnail}
+                    marginRight="16px"
+                  />
+                  <Flex flexDirection={"column"}>
+                    <Text
+                      fontWeight={"semibold"}
+                      fontSize={"18px"}
+                      color={"#fff"}
+                    >
+                      {post.title}
+                    </Text>
+                    <div>
+                      <Text color={"#dbdbdb"}>{post.authors}</Text>
+                    </div>
+                  </Flex>
+                </Flex>
+              ))}
+            </Flex>
+          </Flex>
+        ) : null}
+        <Flex flexDirection={"column"} gap="24px" color={"#fff"}>
+          {type === "default" ? (
+            <Text
+              fontSize={"xl"}
+              color="#DBDBDB"
+              textAlign={"center"}
+              fontWeight="medium"
+            >
+              "Just recommend 3books, then be our whitelist!"{" "}
+            </Text>
+          ) : type === "job" ? (
+            <Text
+              fontSize={"xl"}
+              color="#DBDBDB"
+              textAlign={"center"}
+              fontWeight="medium"
+            >
+              "What’s your job?"{" "}
+            </Text>
+          ) : type === "comment" ? (
+            <>
+              <IconButton
+                padding={"0"}
+                aria-label="back"
+                background={"none"}
+                w="fit-content"
+                top={"-2"}
+                left={"-3"}
+                _hover={{
+                  bg: "none",
+                }}
+                _active={{ bg: "#0e0e0e" }}
+                onClick={() => setType("search")}
+                icon={
+                  <Icon>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2}
+                      stroke="currentColor"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M15.75 19.5L8.25 12l7.5-7.5"
+                      />
+                    </svg>
+                  </Icon>
+                }
+              />
+              <Flex
+                w="full"
+                _hover={{
+                  scale: 0.95,
+                }}
+                cursor="pointer"
+                flexDirection={"row"}
+                onClick={() => {
+                  setCurrentBook({
+                    title: currentBook.title,
+                    thumbnail: currentBook.thumbnail,
+                    authors: currentBook.authors,
+                    job: job,
+                    createdBy: account,
+                  }),
+                    setType("comment");
+                }}
+              >
+                <Image
+                  maxWidth={"80px"}
+                  borderRadius="8px"
+                  src={currentBook.thumbnail}
+                  marginRight="16px"
+                />
+                <Flex flexDirection={"column"}>
+                  <Text
+                    fontWeight={"semibold"}
+                    fontSize={"18px"}
+                    color={"#fff"}
+                  >
+                    {currentBook.title}
+                  </Text>
+                  <div>
+                    <Text color={"#dbdbdb"}>{currentBook.authors}</Text>
+                  </div>
+                </Flex>
+              </Flex>
+              <Flex flexDirection={"column"}>
+                <Text>Comment</Text>
+                <Input
+                  value={comment}
+                  placeholder={
+                    "Please tell us your any impression about this book (Max 200)"
+                  }
+                  onChange={(e) => {
+                    setComment(e.target.value),
+                      setCurrentBook({
+                        title: currentBook.title,
+                        thumbnail: currentBook.thumbnail,
+                        authors: currentBook.authors,
+                        job: job,
+                        createdBy: account,
+                        comment: e.target.value,
+                      });
+                  }}
+                  color="#dbdbdb"
+                  fontSize="18px"
+                  border="none"
+                  padding={0}
+                  background="transparent"
+                  focusBorderColor="none"
+                  _placeholder={{ color: " rgba(245, 245, 245, 0.2);" }}
+                ></Input>
+              </Flex>
+            </>
+          ) : null}
+
           {type === "job" ? (
-            <Select onChange={(e) => setJob(e.target.value)}>
+            <Select
+              placeholder="Select your job"
+              onChange={(e) => setJob(e.target.value)}
+            >
               <option value="Designer">Designer</option>
               <option value="Developer">Developer</option>
               <option value="PM/PO">PM/PO</option>
@@ -106,7 +356,9 @@ const WhiteListCard = () => {
               <option value="Other">Other</option>
             </Select>
           ) : null}
-          <Button text={buttonText} onClick={onClick} />
+          {type === "search" ? null : (
+            <Button text={buttonText} onClick={onClick} />
+          )}
         </Flex>
       </Flex>
     </CardContainer>
