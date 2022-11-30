@@ -78,7 +78,6 @@ const Header: FC = () => {
             </Text>
           </Link>
         </Box>
-        <Button onClick={onOpen}>Trigger modal</Button>
         <Flex gap={2}>
           {scrollLink.map((v, i) => {
             return (

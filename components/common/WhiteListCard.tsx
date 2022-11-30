@@ -10,6 +10,7 @@ import {
   Select,
   Text,
 } from "@chakra-ui/react";
+import axios from "axios";
 import { useWallet } from "hooks";
 import { bookSearch } from "pages/api/book-search";
 import { ReactElement, useEffect, useState } from "react";
@@ -63,7 +64,7 @@ const CardContainer = ({ children, type }: WhiteListCardProps) => {
 };
 
 const WhiteListCard = () => {
-  const { account } = useWallet();
+  const { account, getAccount } = useWallet();
   const [query, setQuery] = useState("");
   const [type, setType] = useState<PageType>("default");
   const [job, setJob] = useState<JobType>("");
@@ -77,6 +78,28 @@ const WhiteListCard = () => {
     comment: "",
     createdBy: "",
   });
+
+  const submitForm = async (e) => {
+    e.preventDefault();
+    const res = await axios.post("http://118.67.129.141:8000/api/bookpost", {
+      title: currentBook.title,
+      authors: currentBook.authors[0],
+      thumbnail: currentBook.thumbnail,
+      createdBy: currentBook.createdBy,
+      comment: currentBook.comment,
+      job: job,
+    });
+    // Success if status code is 201
+    if (res.status === 200) {
+      console.log(res.status, "Thank you for contacting us!", {
+        type: "success",
+      });
+    } else {
+      console.log(res.status, "Please re-check your inputs.", {
+        type: "error",
+      });
+    }
+  };
 
   const buttonText =
     type === "default"
@@ -99,11 +122,15 @@ const WhiteListCard = () => {
       : type === "search"
       ? setType("default")
       : type === "comment"
-      ? console.log(currentBook)
+      ? submitForm
       : type === "select"
       ? ""
       : "";
   };
+
+  useEffect(() => {
+    getAccount();
+  }, []);
 
   const getBookData = async (query: string) => {
     if (query === "") {
@@ -357,9 +384,13 @@ const WhiteListCard = () => {
               <option value="Other">Other</option>
             </Select>
           ) : null}
-          {type === "search" ? null : (
+          {type === "search" ? null : type === "comment" ? null : (
             <Button text={buttonText} onClick={onClick} />
           )}
+
+          {type === "comment" ? (
+            <Button text={buttonText} onClick={submitForm} />
+          ) : null}
         </Flex>
       </Flex>
     </CardContainer>
