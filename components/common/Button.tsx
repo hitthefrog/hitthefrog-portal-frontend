@@ -1,12 +1,13 @@
-import { Button as ChakraButton } from "@chakra-ui/react";
+import { Button as ChakraButton, Spinner } from "@chakra-ui/react";
 
 interface ButtonPorps {
   text: string;
   onClick: any;
-  loading: boolean;
+  loading?: boolean;
+  disabled?: boolean;
 }
 
-const Button = ({ text, onClick, loading }: ButtonPorps) => {
+const Button = ({ text, onClick, loading, disabled }: ButtonPorps) => {
   return (
     <ChakraButton
       borderRadius="8px"
@@ -21,8 +22,9 @@ const Button = ({ text, onClick, loading }: ButtonPorps) => {
       fontWeight="medium"
       padding={"12px"}
       h="fit-content"
-      disabled={loading}
+      disabled={loading || disabled}
     >
+      {loading ? <Spinner marginRight={"8px"} /> : null}
       {text}
     </ChakraButton>
   );

@@ -1,4 +1,4 @@
-import { Box, Flex, Image, Input } from "@chakra-ui/react";
+import { Box, Flex, Image, Input, useToast } from "@chakra-ui/react";
 import Button from "@components/common/Button";
 import axios from "axios";
 import { useWallet } from "hooks";
@@ -9,6 +9,7 @@ const Well = () => {
   const [btnVisible, setBtnVisible] = useState(0);
   const [link, setLink] = useState("");
   const [loading, setLoading] = useState(false);
+  const toast = useToast();
 
   const submitForm = async (e) => {
     setLoading(true);
@@ -22,11 +23,27 @@ const Well = () => {
       console.log(res.status, "Sucess", {
         type: "success",
       });
+      toast({
+        title: "Sucessfully submitted!",
+        description:
+          "FROG will checkout your project. Then you'll get limited NFT",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
       setLoading(false);
       setLink("");
     } else {
       console.log(res.status, "Please re-check your inputs.", {
         type: "error",
+      });
+      setLoading(false);
+      toast({
+        title: "Something wrong :(",
+        description: "Check your metamask address or enternet status!",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
       });
     }
   };
@@ -70,7 +87,7 @@ const Well = () => {
             }}
             color="#dbdbdb"
             fontSize="18px"
-            padding={4}
+            padding={"24px 16px"}
             background="transparent"
             focusBorderColor="none"
             _placeholder={{ color: " rgba(245, 245, 245, 0.2);" }}
@@ -78,6 +95,7 @@ const Well = () => {
           <Button
             loading={loading}
             onClick={submitForm}
+            disabled={link === "" ? true : false}
             text={"Submit project"}
           />
         </Flex>
