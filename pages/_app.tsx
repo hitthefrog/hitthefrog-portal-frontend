@@ -4,6 +4,7 @@ import Layout from "@components/common/Layout";
 import "animate.css";
 import { WagmiConfig, createClient } from "wagmi";
 import { getDefaultProvider } from "ethers";
+import "../styles/style.css";
 
 const client = createClient({
   autoConnect: true,

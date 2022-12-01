@@ -3,9 +3,10 @@ import { Button as ChakraButton } from "@chakra-ui/react";
 interface ButtonPorps {
   text: string;
   onClick: any;
+  loading: boolean;
 }
 
-const Button = ({ text, onClick }: ButtonPorps) => {
+const Button = ({ text, onClick, loading }: ButtonPorps) => {
   return (
     <ChakraButton
       borderRadius="8px"
@@ -20,6 +21,7 @@ const Button = ({ text, onClick }: ButtonPorps) => {
       fontWeight="medium"
       padding={"12px"}
       h="fit-content"
+      disabled={loading}
     >
       {text}
     </ChakraButton>

@@ -9,7 +9,7 @@ interface LayoutProps {
 
 const Layout: FC<LayoutProps> = ({ children }) => {
   return (
-    <Box>
+    <Box backgroundColor={"#000"}>
       <Head>
         {/* PLN title, meta의 content 변경  */}
         <title>ProjectLion NFT</title>
