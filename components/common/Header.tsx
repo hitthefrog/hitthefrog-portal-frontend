@@ -101,7 +101,7 @@ const Header: FC = () => {
                 variant="ghost"
                 fontWeight="regular"
               >
-                Well
+                The WELL
               </Button>
             </Link>
           </Flex>
