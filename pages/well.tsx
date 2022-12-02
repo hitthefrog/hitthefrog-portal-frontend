@@ -1,4 +1,12 @@
-import { Box, Flex, Image, Input, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  cookieStorageManager,
+  Flex,
+  Image,
+  Input,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
 import Button from "@components/common/Button";
 import axios from "axios";
 import { useWallet } from "hooks";
@@ -52,6 +60,8 @@ const Well = () => {
     getAccount();
   }, []);
 
+  console.log(account);
+
   return (
     <Flex
       backgroundColor={"#000"}
@@ -59,50 +69,56 @@ const Well = () => {
       alignItems={"center"}
       height={"calc(100vh - 60px)"}
     >
-      <Flex
-        onMouseEnter={() => setBtnVisible(1)}
-        onMouseLeave={() => setBtnVisible(0)}
-      >
-        <Flex
-          opacity={btnVisible}
-          position="absolute"
-          top={"50%"}
-          left={"50%"}
-          transform="translate(-50%, -65%)"
-          transition={"all 0.25s ease-in-out"}
-          flexDirection="column"
-          gap={"16px"}
-          w="full"
-          maxW={"20%"}
-        >
-          <Input
-            value={link}
-            placeholder={"Your project link"}
-            backgroundColor="rgba(255,255,255,0.1)"
-            border="1px solid rgba(255,255,255,0.1)"
-            borderColor={"rgba(255,255,255,0.1)"}
-            backdropFilter="blur(30px)"
-            onChange={(e) => {
-              setLink(e.target.value);
-            }}
-            color="#dbdbdb"
-            fontSize="18px"
-            padding={"24px 16px"}
-            background="transparent"
-            focusBorderColor="none"
-            _placeholder={{ color: " rgba(245, 245, 245, 0.2);" }}
-          ></Input>
-          <Button
-            loading={loading}
-            onClick={submitForm}
-            disabled={link === "" ? true : false}
-            text={"Submit project"}
-          />
-        </Flex>
-        <Flex>
-          <Image width={"400px"} src="/images/well.png" />
-        </Flex>
-      </Flex>
+      {account ? (
+        <>
+          <Flex
+            onMouseEnter={() => setBtnVisible(1)}
+            onMouseLeave={() => setBtnVisible(0)}
+          >
+            <Flex
+              opacity={btnVisible}
+              position="absolute"
+              top={"50%"}
+              left={"50%"}
+              transform="translate(-50%, -65%)"
+              transition={"all 0.25s ease-in-out"}
+              flexDirection="column"
+              gap={"16px"}
+              w="full"
+              maxW={"20%"}
+            >
+              <Input
+                value={link}
+                placeholder={"Your project link"}
+                backgroundColor="rgba(255,255,255,0.1)"
+                border="1px solid rgba(255,255,255,0.1)"
+                borderColor={"rgba(255,255,255,0.1)"}
+                backdropFilter="blur(30px)"
+                onChange={(e) => {
+                  setLink(e.target.value);
+                }}
+                color="#dbdbdb"
+                fontSize="18px"
+                padding={"24px 16px"}
+                background="transparent"
+                focusBorderColor="none"
+                _placeholder={{ color: " rgba(245, 245, 245, 0.2);" }}
+              ></Input>
+              <Button
+                loading={loading}
+                onClick={submitForm}
+                disabled={link === "" ? true : false}
+                text={"Submit project"}
+              />
+            </Flex>
+            <Flex>
+              <Image width={"400px"} src="/images/well.png" />
+            </Flex>
+          </Flex>
+        </>
+      ) : (
+        <Text>Login</Text>
+      )}
     </Flex>
   );
 };

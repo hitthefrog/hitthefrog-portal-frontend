@@ -42,6 +42,7 @@ const Header: FC = () => {
   };
 
   useEffect(() => {
+    getAccount();
     if (account) {
       onOpen();
     }
