@@ -67,7 +67,7 @@ const Well = () => {
       backgroundColor={"#000"}
       justifyContent="center"
       alignItems={"center"}
-      height={"calc(100vh - 60px)"}
+      height={"100vh"}
     >
       {account ? (
         <>
@@ -112,7 +112,7 @@ const Well = () => {
               />
             </Flex>
             <Flex>
-              <Image width={"400px"} src="/images/well.png" />
+              <Image width={"400px"} src="/images/well_2.png" />
             </Flex>
           </Flex>
         </>
