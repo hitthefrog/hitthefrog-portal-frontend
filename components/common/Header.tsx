@@ -27,11 +27,7 @@ import Link from "next/link";
 import WhiteListCard from "./WhiteListCard";
 
 // PLN 프로젝트에 맞게 세계관, 로드맵, 팀 변경
-const scrollLink = [
-  { id: "story", name: "Story" },
-  { id: "roadmap", name: "Roadmap" },
-  { id: "team", name: "Team" },
-];
+const scrollLink = [{}];
 
 const Header: FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -80,7 +76,7 @@ const Header: FC = () => {
           </Link>
         </Box>
         <Flex gap={2}>
-          {scrollLink.map((v, i) => {
+          {/* {scrollLink.map((v, i) => {
             return (
               <ScrollLink key={i} to={v.id} spy={true} smooth={true}>
                 <Button
@@ -94,7 +90,7 @@ const Header: FC = () => {
                 </Button>
               </ScrollLink>
             );
-          })}
+          })} */}
           <Flex justifyContent="center" alignItems="center">
             <Link href="/well">
               <Button

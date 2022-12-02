@@ -15,9 +15,6 @@ const Home: NextPage = () => {
         />
       </Head>
       <Title />
-      <Story />
-      <Roadmap />
-      <Team />
     </main>
   );
 };
