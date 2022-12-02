@@ -301,7 +301,7 @@ const WhiteListCard = () => {
                   textAlign={"center"}
                   fontWeight="medium"
                 >
-                  "Just recommend 3books, then be our whitelist!"{" "}
+                  Just recommend 3books, then be our whitelist!
                 </Text>
               ) : type === "job" ? (
                 <Text
@@ -310,7 +310,7 @@ const WhiteListCard = () => {
                   textAlign={"center"}
                   fontWeight="medium"
                 >
-                  "What’s your job?"{" "}
+                  What’s your job?
                 </Text>
               ) : type === "comment" ? (
                 <>
