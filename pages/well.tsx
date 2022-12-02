@@ -19,7 +19,7 @@ const Well = () => {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
 
-  const submitForm = async (e) => {
+  const submitForm = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoading(true);
     e.preventDefault();
     const res = await axios.post("http://118.67.129.141:8000/api/projectdrop", {
