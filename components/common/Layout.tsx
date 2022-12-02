@@ -18,7 +18,7 @@ const Layout: FC<LayoutProps> = ({ children }) => {
       </Head>
       <Header />
       {children}
-      <footer>
+      {/* <footer>
         <Box textAlign="center" my={2}>
           <Text fontSize="sm">
             Team ProjectLion NFT | 76, Haneul-gil, Gangseo-gu, Seoul, Republic
@@ -28,7 +28,7 @@ const Layout: FC<LayoutProps> = ({ children }) => {
             COPYRIGHT &copy; Team ProjectLion NFT. ALL RIGHT RESERVED
           </Text>
         </Box>
-      </footer>
+      </footer> */}
     </Box>
   );
 };
