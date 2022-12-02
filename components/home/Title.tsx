@@ -21,8 +21,8 @@ const Title: FC = () => {
         px={24}
       >
         <Flex w="full" gap={12}>
-          <img src="/images/logo_colorful.svg" />
-          <Text
+          <img src="/images/logo_colorful_1.svg" />
+          {/* <Text
             color={"#fff"}
             fontWeight="bold"
             fontSize="6xl"
@@ -30,13 +30,13 @@ const Title: FC = () => {
             fontStyle="normal"
           >
             is community for creators
-          </Text>
+          </Text> */}
         </Flex>
-
+        {/* 
         <Text color={"#fff"} fontWeight="bold" fontSize="6xl">
           based in South Korea. We’re with [ Pleasant, Confident and Bold ]
           people.
-        </Text>
+        </Text> */}
       </Flex>
     </Flex>
   );
