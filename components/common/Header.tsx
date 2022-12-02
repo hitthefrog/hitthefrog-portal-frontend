@@ -70,7 +70,7 @@ const Header: FC = () => {
               fontWeight="bold"
               fontSize="xl"
               cursor="pointer"
-              w="20"
+              w="32"
             >
               <img src="/images/logo_white.svg" />
             </Text>
