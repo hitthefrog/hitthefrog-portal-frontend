@@ -8,6 +8,12 @@ import Head from "next/head";
 const Home: NextPage = () => {
   return (
     <main>
+      <Head>
+        {/* <meta
+          http-equiv="Content-Security-Policy"
+          content="upgrade-insecure-requests"
+        /> */}
+      </Head>
       <Title />
     </main>
   );

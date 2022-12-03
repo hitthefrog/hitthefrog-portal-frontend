@@ -94,9 +94,33 @@ const WhiteListCard = () => {
       comment: currentBook.comment,
       job: job,
     });
-    // Success if status code is 201
-    if (res.status === 200) {
-      console.log(res.status, "Thank you for contacting us!", {
+
+    if (res.data.count < 0) {
+      console.log(res, "You're already in our whitelist");
+
+      toast({
+        title: "Sucessfully submitted!",
+        description: `You're already in our whitelist!`,
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+      setLoading(false);
+      setType("default");
+      setComment("");
+      setQuery("");
+      setCurrentBook({
+        title: "",
+        authors: "",
+        thumbnail: "",
+        comment: "",
+        createdBy: "",
+      });
+    }
+
+    // Success if status code is 200
+    if (res.status === 200 && res.data.count > 0) {
+      console.log(res, "Thank you for contacting us!", {
         type: "success",
       });
 
@@ -105,7 +129,7 @@ const WhiteListCard = () => {
       toast({
         title: "Sucessfully submitted!",
         description: `${
-          count === 3
+          res.data.count === 3
             ? "Congratulations🎉 Now you can buy our NFT"
             : `You left ${count + 1} books`
         }`,
@@ -442,6 +466,7 @@ const WhiteListCard = () => {
                   disabled={comment === "" ? true : false}
                   text={buttonText}
                   onClick={submitForm}
+                  loading={loading}
                 />
               ) : null}
             </Flex>
