@@ -97,7 +97,7 @@ const WhiteListCard = () => {
 
     if (res.data.count < 0) {
       console.log(res, "You're already in our whitelist");
-
+      setLoading(false);
       toast({
         title: "Sucessfully submitted!",
         description: `You're already in our whitelist!`,
@@ -105,7 +105,7 @@ const WhiteListCard = () => {
         duration: 9000,
         isClosable: true,
       });
-      setLoading(false);
+
       setType("default");
       setComment("");
       setQuery("");
@@ -123,7 +123,7 @@ const WhiteListCard = () => {
       console.log(res, "Thank you for contacting us!", {
         type: "success",
       });
-
+      setLoading(false);
       setCount(count + 1);
 
       toast({
@@ -137,7 +137,7 @@ const WhiteListCard = () => {
         duration: 9000,
         isClosable: true,
       });
-      setLoading(false);
+
       setType("search");
       setComment("");
       setQuery("");
